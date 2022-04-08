@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from 'src/database/database.module';
-import { TestResolver } from 'src/http/test.resolver';
 import { GraphQLModule } from '@nestjs/graphql';
-import path from 'node:path';
 import { ApolloDriver } from '@nestjs/apollo';
+import path from 'node:path';
+import { DatabaseModule } from '../database/database.module';
+import { StudentsResolver } from './graphql/resolvers/students.resolver';
+import { EnrollmentsResolver } from './graphql/resolvers/enrollments.resolver';
+import { CoursesResolver } from './graphql/resolvers/courses.resolver';
+import { StudentsService } from '../services/students.service';
+import { EnrollmentsService } from '../services/enrollments.service';
+import { CoursesService } from '../services/courses.service';
 
 @Module({
   imports: [
@@ -15,6 +20,16 @@ import { ApolloDriver } from '@nestjs/apollo';
       autoSchemaFile: path.resolve(process.cwd(), 'src/schema.gql'),
     }),
   ],
-  providers: [TestResolver],
+  providers: [
+    // Resolvers
+    StudentsResolver,
+    EnrollmentsResolver,
+    CoursesResolver,
+
+    // Services
+    StudentsService,
+    EnrollmentsService,
+    CoursesService,
+  ],
 })
 export class HttpModule {}
