@@ -1,5 +1,11 @@
 import { UseGuards } from '@nestjs/common';
-import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  ResolveReference,
+} from '@nestjs/graphql';
 import { CustomersService } from '../../../services/customers.service';
 import { PurchasesService } from '../../../services/purchases.service';
 import { AuthorizationGuard } from '../../auth/authorization.guard';
@@ -22,5 +28,12 @@ export class CustomersResolver {
   @ResolveField()
   async purchases(@Parent() customer: Customer) {
     return await this.purchasesService.listAllFromCustomer(customer.id);
+  }
+
+  @ResolveReference()
+  async resolverReference(reference: { authUserId: string }) {
+    return await this.customerService.getCustomerByAuthUserId(
+      reference.authUserId,
+    );
   }
 }
