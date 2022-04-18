@@ -7,6 +7,8 @@ interface CreateProductParams {
   title: string;
 }
 
+const regexToSlug = /[*+~.()'"!:@]/g;
+
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
@@ -24,7 +26,10 @@ export class ProductsService {
   }
 
   async createProduct({ title }: CreateProductParams) {
-    const slug = slugify(title, { lower: true });
+    const slug = slugify(title, {
+      lower: true,
+      remove: regexToSlug,
+    });
 
     const productWithSameSlug = await this.prisma.product.findUnique({
       where: { slug },

@@ -8,6 +8,8 @@ interface CreateCourseParams {
   title: string;
 }
 
+const regexToSlug = /[*+~.()'"!:@]/g;
+
 @Injectable()
 export class CoursesService {
   constructor(private prisma: PrismaService) {}
@@ -30,7 +32,10 @@ export class CoursesService {
 
   async createCourse({
     title,
-    slug = slugify(title, { lower: true }),
+    slug = slugify(title, {
+      lower: true,
+      remove: regexToSlug,
+    }),
   }: CreateCourseParams) {
     const courseAlreadyExists = await this.prisma.course.findUnique({
       where: { slug },
